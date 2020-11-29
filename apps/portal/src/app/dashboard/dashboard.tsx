@@ -24,7 +24,10 @@ export function Dashboard(props: DashboardProps) {
   }), [setUserInfo]);
 
   useEffect(() => {
-
+    console.log(userInfo);
+    // we will have stale closure here
+    // disable for demo only
+    // eslint-disable-next-line
   }, []);
 
   return (
