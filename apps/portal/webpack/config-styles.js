@@ -1,12 +1,49 @@
+/**
+ * This file used to config ant design - less theme
+ * By default the project will create some rules to handle less files
+ */
 const path = require('path');
 
 const readAntdCustomizeLess = (filename) => {
-  const fs = require("fs");
+  const fs = require('fs');
   if (!fs.existsSync(filename)) return false;
-  return fs.readFileSync(filename, "utf8");
+  return fs.readFileSync(filename, 'utf8');
 };
 
-module.exports = function(webpackConfig, context) {
+function createRuleLoaders(mainRule, modifyVars, contextOptions) {
+  const loaders = mainRule.use;
+
+  return loaders.map(ruleOrLoader => {
+    let rule;
+    if (typeof ruleOrLoader === 'string') {
+      rule = {
+        loader: ruleOrLoader,
+        options: {}
+      };
+    } else {
+      rule = ruleOrLoader;
+    }
+
+    if (rule.loader.includes(`sass-loader`) || rule.loader.includes(`less-loader`)) {
+      const defaultLessLoaderOptions = {
+        sourceMap: contextOptions.sourceMap
+      };
+      return {
+        ...rule,
+        loader: require.resolve('less-loader'),
+        options: {
+          ...defaultLessLoaderOptions,
+          ...rule.options,
+          modifyVars,
+          javascriptEnabled: true,
+        }
+      };
+    }
+    return rule;
+  });
+}
+
+module.exports = function (webpackConfig, context) {
   const configuration = context.configuration || 'development';
   const contextOptions = context.buildOptions || context.options;
   const throwError = (message, query) => {
@@ -18,7 +55,7 @@ module.exports = function(webpackConfig, context) {
   let modifyVars = {};
   const antdCustomVarsLess = readAntdCustomizeLess(path.join(__dirname, `..${path.sep}src${path.sep}antd.customize.less`));
   if (antdCustomVarsLess) {
-    const lessToJs = require("less-vars-to-js");
+    const lessToJs = require('less-vars-to-js');
     modifyVars = lessToJs(antdCustomVarsLess)
   }
 
@@ -26,107 +63,49 @@ module.exports = function(webpackConfig, context) {
   const oneOfRule = webpackConfig.module.rules.find(rule => rule.oneOf);
   if (!oneOfRule) {
     throwError(
-      "Can't find a 'oneOf' rule under module.rules in the " +
-      `${configuration} webpack config!`,
-      "webpack+rules+oneOf"
+      `Can't find a 'oneOf' rule under module.rules in the ${configuration} webpack config!`,
+      'webpack+rules+oneOf'
     );
   }
 
   const sassRule = oneOfRule.oneOf.find(
-    rule => rule.test && rule.test.toString().includes("scss|sass")
+    rule => rule.test && rule.test.toString().includes('scss|sass')
   );
   if (!sassRule) {
     throwError(
-      "Can't find the webpack rule to match scss/sass files in the " +
-      `${configuration} webpack config!`,
-      "webpack+rules+scss+sass"
+      `Can't find the webpack rule to match scss/sass files in the ${configuration} webpack config!`,
+      'webpack+rules+scss+sass'
     );
   }
 
+  const firstLessRuleIndex = oneOfRule.oneOf.findIndex(
+    rule => rule.test && rule.test.toString().includes('.less')
+  );
+
+  const firstLessRule = oneOfRule.oneOf[firstLessRuleIndex];
+
   const lessRule = {
     exclude: /\.module\.(less)$/,
-    test: /\.less$/,
+    test: /node_modules\/antd.*\.less$/,
     use: []
   };
 
-  const loaders = sassRule.use;
+  lessRule.use = createRuleLoaders(firstLessRule || sassRule, modifyVars, contextOptions);
 
-  loaders.forEach(ruleOrLoader => {
-    let rule;
-    if (typeof ruleOrLoader === "string") {
-      rule = {
-        loader: ruleOrLoader,
-        options: {}
-      };
-    } else {
-      rule = ruleOrLoader;
-    }
-
-    if (
-      rule.loader.includes(`style-loader`)
-    ) {
-      lessRule.use.push({
-        loader: rule.loader,
-        options: {
-          ...rule.options,
-        }
-      });
-    } else if (rule.loader.includes(`css-loader`)) {
-      lessRule.use.push({
-        loader: rule.loader,
-        options: {
-          ...rule.options,
-        }
-      });
-    } else if (rule.loader.includes(`postcss-loader`)) {
-      lessRule.use.push({
-        loader: rule.loader,
-        options: {
-          ...rule.options,
-        }
-      });
-    } else if (rule.loader.includes(`resolve-url-loader`)) {
-      lessRule.use.push({
-        loader: rule.loader,
-        options: {
-          ...rule.options,
-        }
-      });
-    } else if (rule.loader.includes(`mini-css-extract-plugin`)) {
-      lessRule.use.push({
-        loader: rule.loader,
-        options: {
-          ...rule.options,
-        }
-      });
-    } else if (rule.loader.includes(`sass-loader`)) {
-      const defaultLessLoaderOptions = {
-        sourceMap: contextOptions.sourceMap
-      };
-      lessRule.use.push({
-        loader: require.resolve("less-loader"),
-        options: {
-          ...defaultLessLoaderOptions,
-          modifyVars,
-          javascriptEnabled: true,
-        }
-      });
-    } else {
-      throwError(
-        `Found an unhandled loader in the ${configuration} webpack config: ${rule.loader}`,
-        "webpack+unknown+rule"
-      );
-    }
-  });
-  oneOfRule.oneOf.push(lessRule);
+  if (firstLessRuleIndex >= 0) {
+    oneOfRule.oneOf.splice(firstLessRuleIndex - 1, 0, lessRule);
+  } else {
+    oneOfRule.oneOf.push(lessRule);
+  }
 
   // config sass-resources-loader
+  /*
   webpackConfig.module.rules.forEach((rule) => {
     if (Object.prototype.hasOwnProperty.call(rule, 'oneOf')) {
       rule.oneOf.forEach((oneOf) => {
         if (
           oneOf.test && oneOf.use &&
-          (`${oneOf.test}`.includes('scss') || `${oneOf.test}`.includes('sass'))
+          (`${oneOf.test}`.includes('.scss') || `${oneOf.test}`.includes('.sass') || `${oneOf.test}`.includes('.less'))
         ) {
 
           oneOf.use.push({
@@ -139,6 +118,6 @@ module.exports = function(webpackConfig, context) {
       });
     }
   });
-
+  */
   return webpackConfig;
 }
