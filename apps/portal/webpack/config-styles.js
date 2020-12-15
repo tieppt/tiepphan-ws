@@ -86,7 +86,7 @@ module.exports = function (webpackConfig, context) {
 
   const lessRule = {
     exclude: /\.module\.(less)$/,
-    test: /node_modules\/antd.*\.less$/,
+    test: /node_modules[\/\\]antd.*\.less$/,
     use: []
   };
 
@@ -97,27 +97,5 @@ module.exports = function (webpackConfig, context) {
   } else {
     oneOfRule.oneOf.push(lessRule);
   }
-
-  // config sass-resources-loader
-  /*
-  webpackConfig.module.rules.forEach((rule) => {
-    if (Object.prototype.hasOwnProperty.call(rule, 'oneOf')) {
-      rule.oneOf.forEach((oneOf) => {
-        if (
-          oneOf.test && oneOf.use &&
-          (`${oneOf.test}`.includes('.scss') || `${oneOf.test}`.includes('.sass') || `${oneOf.test}`.includes('.less'))
-        ) {
-
-          oneOf.use.push({
-            loader: 'sass-resources-loader',
-            options: {
-              resources: contextOptions.styles.map(style => path.join(contextOptions.root, style)),
-            },
-          })
-        }
-      });
-    }
-  });
-  */
   return webpackConfig;
 }
