@@ -24,7 +24,15 @@ function createRuleLoaders(mainRule, modifyVars, contextOptions) {
       rule = ruleOrLoader;
     }
 
-    if (rule.loader.includes(`sass-loader`) || rule.loader.includes(`less-loader`)) {
+    if (rule.loader.includes(`css-loader`)) {
+      return {
+        loader: rule.loader,
+        options: {
+          ...rule.options,
+          modules: false,
+        }
+      }
+    } else if (rule.loader.includes(`sass-loader`) || rule.loader.includes(`less-loader`)) {
       const defaultLessLoaderOptions = {
         sourceMap: contextOptions.sourceMap
       };

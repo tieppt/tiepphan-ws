@@ -1,6 +1,6 @@
 {
   "presets": ["@nrwl/react/babel"],
   "plugins": [
-    ["import", { "libraryName": "antd", "libraryDirectory": "lib", "style": true}]
+    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true}]
   ]
 }

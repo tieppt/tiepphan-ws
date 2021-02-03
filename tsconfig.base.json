@@ -15,7 +15,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@tpws/react-web/router": ["libs/react-web/router/src/index.ts"],
+      "@tpws/react-web/hooks": ["libs/react-web/hooks/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
