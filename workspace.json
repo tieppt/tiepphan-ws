@@ -15,8 +15,13 @@
             "main": "apps/portal/src/main.tsx",
             "polyfills": "apps/portal/src/polyfills.ts",
             "tsConfig": "apps/portal/tsconfig.app.json",
-            "assets": ["apps/portal/src/favicon.ico", "apps/portal/src/assets"],
-            "styles": ["apps/portal/src/styles.scss"],
+            "assets": [
+              "apps/portal/src/favicon.ico",
+              "apps/portal/src/assets"
+            ],
+            "styles": [
+              "apps/portal/src/styles.scss"
+            ],
             "scripts": [],
             "webpackConfig": "apps/portal/webpack.config.js"
           },
@@ -43,7 +48,10 @@
                 }
               ]
             }
-          }
+          },
+          "outputs": [
+            "{options.outputPath}"
+          ]
         },
         "serve": {
           "builder": "@nrwl/web:dev-server",
@@ -60,7 +68,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/portal/**/*.{ts,tsx,js,jsx}"]
+            "lintFilePatterns": [
+              "apps/portal/**/*.{ts,tsx,js,jsx}"
+            ]
           }
         },
         "test": {
@@ -68,7 +78,10 @@
           "options": {
             "jestConfig": "apps/portal/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": [
+            "coverage/apps/portal"
+          ]
         }
       }
     },
@@ -93,7 +106,9 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/portal-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "apps/portal-e2e/**/*.{js,ts}"
+            ]
           }
         }
       }
