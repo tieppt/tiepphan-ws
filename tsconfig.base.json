@@ -11,13 +11,15 @@
     "target": "es2015",
     "module": "esnext",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2017", "dom"],
+    "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@tpws/react-web/router": ["libs/react-web/router/src/index.ts"],
-      "@tpws/react-web/hooks": ["libs/react-web/hooks/src/index.ts"]
+      "@tpws/react-web/hooks": ["libs/react-web/hooks/src/index.ts"],
+      "@tpws/common/models": ["libs/common/models/src/index.ts"],
+      "@tpws/common/http": ["libs/common/http/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

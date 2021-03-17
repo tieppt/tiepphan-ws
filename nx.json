@@ -19,6 +19,8 @@
     "portal": { "tags": [] },
     "portal-e2e": { "tags": [], "implicitDependencies": ["portal"] },
     "react-web-router": { "tags": [] },
-    "react-web-hooks": { "tags": [] }
+    "react-web-hooks": { "tags": [] },
+    "common-models": { "tags": [] },
+    "common-http": { "tags": [] }
   }
 }

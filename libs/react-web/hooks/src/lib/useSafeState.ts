@@ -1,19 +1,10 @@
 import React, {
-  useRef,
   useState,
   useCallback,
   Dispatch,
   SetStateAction,
-  useLayoutEffect,
 } from 'react';
-export function useMounted() {
-  const mountedRef = useRef(false);
-  useLayoutEffect(() => {
-    mountedRef.current = true;
-    return () => (mountedRef.current = false);
-  }, []);
-  return mountedRef;
-}
+import { useMounted } from './useMounted';
 
 export function useSafeState<S = undefined>(
   initialState: S | undefined = undefined
